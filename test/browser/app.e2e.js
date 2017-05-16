@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import 'babel-polyfill';
-import {beforeAndAfter} from '../environment';
+import {beforeAndAfter, browserAfterEach} from '../environment';
 
 const appDriver = {
   navigate: (url = '/') => browser.get(url),
@@ -19,6 +19,7 @@ const gameDriver = {
 
 describe('React application', () => {
   beforeAndAfter();
+  browserAfterEach();
 
   it('should create a new game', async () => {
     await appDriver.navigate();
