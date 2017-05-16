@@ -13,6 +13,7 @@
     "pretest": "yoshi lint && yoshi build",
     "build": ":",
     "test": "yoshi test",
+    "test:e2e": "yoshi test -- protractor",
     "release": "yoshi release"
   },
   "devDependencies": {
