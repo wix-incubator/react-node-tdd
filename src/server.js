@@ -1,10 +1,32 @@
 import express from 'express';
 import ejs from 'ejs';
+import bodyParser from 'body-parser';
+import session from 'express-session';
 import Promise from 'bluebird';
 import 'babel-polyfill';
 
 module.exports = () => {
   const app = express();
+
+  app.use(session({
+    secret: 'yoba',
+    cookie: {
+      httpOnly: false
+    },
+    resave: true,
+    saveUninitialized: true
+  }));
+
+  app.post('/api/game', bodyParser.json(), (req, res) => {
+    const gameData = req.session.gameData || [];
+    req.session.gameData = [...gameData, req.body];
+    res.json(req.body);
+  });
+
+  app.get('/api/games', (req, res) => {
+    res.json(req.session.gameData || []);
+  });
+
 
   app.get('/', async (req, res) => {
     const templatePath = './src/index.ejs';

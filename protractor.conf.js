@@ -1,4 +1,3 @@
-import server from './src/server';
 const port = 3100;
 
 exports.config = {
@@ -8,6 +7,5 @@ exports.config = {
   baseUrl: `http://localhost:${port}/`,
   onPrepare() {
     browser.ignoreSynchronization = true;
-    return new Promise(resolve => server().listen(port, resolve));
   }
 };
