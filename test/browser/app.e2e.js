@@ -5,7 +5,7 @@ import {beforeAndAfter, browserAfterEach} from '../environment';
 const appDriver = {
   navigate: (url = '/') => browser.get(url),
   clickNewGame: () => $(`[data-hook=new-game]`).click(),
-  getSavedGames: () => $(`[data-hook=game]`).map(el => el.getText())
+  getSavedGames: () => $$(`[data-hook=game]`).map(el => el.getText())
 };
 
 const gameDriver = {
@@ -28,7 +28,7 @@ describe('React application', () => {
     expect(await gameDriver.getCells().count()).to.eql(100);
   });
 
-  it.skip('should save new game', async () => {
+  it('should save new game', async () => {
     const game = {name: 'yaniv'};
     await appDriver.navigate();
     await appDriver.clickNewGame();
