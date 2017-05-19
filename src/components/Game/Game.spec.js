@@ -2,9 +2,9 @@ import React from 'react';
 import {expect} from 'chai';
 import nock from 'nock';
 import {mount} from 'enzyme';
+import tp from 'trier-promise';
 import Game from './Game';
 import {getTestBaseUrl} from '../../../test/test-common';
-import tp from 'trier-promise';
 
 const driver = {
   saveGame: ({wrapper, gameName}) => {
