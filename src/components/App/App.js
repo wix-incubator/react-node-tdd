@@ -16,12 +16,6 @@ class App extends Component {
   render() {
     return (
       <div className={s.root}>
-        <div className={s.header}>
-          <h2>{'Hello World!'}</h2>
-        </div>
-        <p className={s.intro}>
-          {'Get started here: https://github.com/wix/yoshi'}
-        </p>
         <Link to="/game" data-hook="new-game">New game</Link>
         <ul>
           {this.state.games.map((el, idx) => <li data-hook="game" key={idx}>{el.name}</li>)}
