@@ -2,9 +2,8 @@ import React from 'react';
 import {expect} from 'chai';
 import nock from 'nock';
 import {mount} from 'enzyme';
-import tp from 'trier-promise';
 import Game from './Game';
-import {getTestBaseUrl} from '../../../test/test-common';
+import {getTestBaseUrl, eventually} from '../../../test/test-common';
 
 const driver = {
   saveGame: ({wrapper, gameName}) => {
@@ -45,11 +44,3 @@ describe('Game', () => {
     return eventually(() => expect(savedData).to.eql(gameData));
   });
 });
-
-function eventually(action) {
-  return tp({
-    action,
-    timeout: 10000,
-    interval: 200
-  });
-}

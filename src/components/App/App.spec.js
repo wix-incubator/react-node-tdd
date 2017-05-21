@@ -2,10 +2,9 @@ import React from 'react';
 import {expect} from 'chai';
 import {mount} from 'enzyme';
 import nock from 'nock';
-import tp from 'trier-promise';
 import {StaticRouter} from 'react-router';
 import App from './App';
-import {getTestBaseUrl} from '../../../test/test-common';
+import {getTestBaseUrl, eventually} from '../../../test/test-common';
 
 describe('App', () => {
   let wrapper;
@@ -36,11 +35,3 @@ describe('App', () => {
       expect(wrapper.find('[data-hook="game"]').text()).to.eql(games[0].name));
   });
 });
-
-function eventually(action) {
-  return tp({
-    action,
-    timeout: 10000,
-    interval: 200
-  });
-}
