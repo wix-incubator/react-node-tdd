@@ -39,5 +39,13 @@ describe('Api', () => {
 
     expect(gamesResp.data).to.eql(game);
   });
+
+  it('should return an empty array for no games', async () => {
+    const gamesResp = await axiosInstance.get(`/api/game/bla`);
+
+    expect(gamesResp.status).to.eql(200);
+
+    expect(gamesResp.data).to.eql([]);
+  });
 });
 
