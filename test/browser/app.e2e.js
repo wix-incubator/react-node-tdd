@@ -8,18 +8,20 @@ const appDriver = {
   getSavedGames: () => $$(`[data-hook=game]`).map(el => el.getText())
 };
 
-const gameDriver = {
+const gameDriverFactory = () => ({
   getRows: () => $$('[data-hook=row]'),
   getCells: () => $$('[data-hook=cell]'),
   saveGame: async game => {
     await $('[data-hook=game-name-input]').clear().sendKeys(game.name);
     await $('[data-hook=game-save]').click();
   }
-};
+});
 
 describe('React application', () => {
   beforeAndAfter();
   browserAfterEach();
+
+  const gameDriver = gameDriverFactory();
 
   it('should create a new game', async () => {
     await appDriver.navigate();
