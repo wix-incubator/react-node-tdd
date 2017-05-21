@@ -14,7 +14,17 @@ const driver = {
   },
   clickCellAt: ({wrapper, index}) => wrapper.find('[data-hook="cell"]').at(index).simulate('click'),
   isCelRevealedAt: ({wrapper, index}) => wrapper.find('[data-hook="cell"]').at(index).hasClass('revealed'),
-  getGameName: ({wrapper}) => wrapper.find('[data-hook="game-name-input"]').get(0).value
+  getGameName: ({wrapper}) => wrapper.find('[data-hook="game-name-input"]').get(0).value,
+  mount: () => mount(
+    <Game/>,
+    {attachTo: document.createElement('div')}
+  ),
+  mountWithRoute: route => mount(
+    <MemoryRouter initialEntries={[route]}>
+      <Route path="/:gameName" component={Game}/>
+    </MemoryRouter>,
+      {attachTo: document.createElement('div')}
+  )
 };
 describe('Game', () => {
   let wrapper;
@@ -40,10 +50,7 @@ describe('Game', () => {
         return true;
       }).reply(200);
 
-    wrapper = mount(
-      <Game/>,
-       {attachTo: document.createElement('div')}
-    );
+    wrapper = driver.mount();
 
     driver.clickCellAt({wrapper, index: 0});
     driver.saveGame({wrapper, gameName: gameExpectedData.name});
@@ -58,13 +65,7 @@ describe('Game', () => {
     };
 
     nock(getTestBaseUrl()).get(`/api/game/${savedGame.name}`).reply(() => savedGame);
-
-    wrapper = mount(
-      <MemoryRouter initialEntries={[`/${savedGame.name}`]}>
-        <Route path="/:gameName" component={Game}/>
-      </MemoryRouter>,
-       {attachTo: document.createElement('div')}
-    );
+    wrapper = driver.mountWithRoute(`/${savedGame.name}`);
 
     return eventually(() => {
       expect(driver.isCelRevealedAt({wrapper, index: 0})).to.eql(true);
@@ -73,10 +74,7 @@ describe('Game', () => {
   });
 
   it('should reveal multiple cells', () => {
-    wrapper = mount(
-      <Game/>,
-       {attachTo: document.createElement('div')}
-    );
+    wrapper = driver.mount();
 
     driver.clickCellAt({wrapper, index: 0});
     driver.clickCellAt({wrapper, index: 1});
