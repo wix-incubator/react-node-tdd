@@ -13,7 +13,8 @@ const driver = {
     wrapper.find('[data-hook="game-save"]').simulate('click');
   },
   clickCellAt: ({wrapper, index}) => wrapper.find('[data-hook="cell"]').at(index).simulate('click'),
-  isCelRevealedAt: ({wrapper, index}) => wrapper.find('[data-hook="cell"]').at(index).hasClass('revealed')
+  isCelRevealedAt: ({wrapper, index}) => wrapper.find('[data-hook="cell"]').at(index).hasClass('revealed'),
+  getGameName: ({wrapper}) => wrapper.find('[data-hook="game-name-input"]').get(0).value
 };
 describe('Game', () => {
   let wrapper;
@@ -67,6 +68,20 @@ describe('Game', () => {
 
     return eventually(() => {
       expect(driver.isCelRevealedAt({wrapper, index: 0})).to.eql(true);
+      expect(driver.getGameName({wrapper})).to.eql(savedGame.name);
     });
+  });
+
+  it('should reveal multiple cells', () => {
+    wrapper = mount(
+      <Game/>,
+       {attachTo: document.createElement('div')}
+    );
+
+    driver.clickCellAt({wrapper, index: 0});
+    driver.clickCellAt({wrapper, index: 1});
+
+    expect(driver.isCelRevealedAt({wrapper, index: 0})).to.eql(true);
+    expect(driver.isCelRevealedAt({wrapper, index: 1})).to.eql(true);
   });
 });
