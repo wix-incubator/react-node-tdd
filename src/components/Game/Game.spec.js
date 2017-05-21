@@ -9,7 +9,8 @@ const driver = {
   saveGame: ({wrapper, gameName}) => {
     wrapper.find('[data-hook="game-name-input"]').simulate('change', {target: {value: gameName}});
     wrapper.find('[data-hook="game-save"]').simulate('click');
-  }
+  },
+  clickCellAt: ({wrapper, index}) => wrapper.find('[data-hook="cell"]').at(index).simulate('click')
 };
 describe('Game', () => {
   let wrapper;
@@ -28,7 +29,7 @@ describe('Game', () => {
 
   it('should save a game', () => {
     let savedData;
-    const gameData = {name: 'Yaniv', board: {}};
+    const gameExpectedData = {name: 'Yaniv', board: {[JSON.stringify({x: 0, y: 0})]: {revealed: true}}};
     nock(getTestBaseUrl())
       .post('/api/game', body => {
         savedData = body;
@@ -40,7 +41,8 @@ describe('Game', () => {
        {attachTo: document.createElement('div')}
     );
 
-    driver.saveGame({wrapper, gameName: gameData.name});
-    return eventually(() => expect(savedData).to.eql(gameData));
+    driver.clickCellAt({wrapper, index: 0});
+    driver.saveGame({wrapper, gameName: gameExpectedData.name});
+    return eventually(() => expect(savedData).to.eql(gameExpectedData));
   });
 });
