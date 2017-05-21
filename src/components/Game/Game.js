@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import './Game.scss';
 
 class Game extends Component {
   constructor(props) {
@@ -16,6 +17,8 @@ class Game extends Component {
     event.preventDefault();
   }
 
+  handleCellClick = key => this.setState({board: {[JSON.stringify(key)]: {revealed: true}}})
+
   render() {
     return (
       <div>
@@ -26,8 +29,8 @@ class Game extends Component {
         <table>
           <tbody>
             {new Array(10).fill(undefined).map((row, x) =>
-              <tr key={x} data-hook="row">
-                {new Array(10).fill(undefined).map((cell, y) => <td key={y} data-hook="cell"/>)}
+              <tr className="row" key={x} data-hook="row">
+                {new Array(10).fill(undefined).map((cell, y) => <td onClick={() => this.handleCellClick({x, y})} key={y} data-hook="cell"/>)}
               </tr>
             )}
           </tbody>
