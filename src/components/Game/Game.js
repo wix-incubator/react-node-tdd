@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import {merge} from 'lodash';
 import Board from '../Board';
 
 class Game extends Component {
@@ -26,13 +27,16 @@ class Game extends Component {
     event.preventDefault();
   }
 
-  handleCellClick = key => this.setState({board: {[JSON.stringify(key)]: {revealed: true}}})
+  handleCellClick = key => {
+    const board = merge(this.state.board, {[JSON.stringify(key)]: {revealed: true}});
+    this.setState({board});
+  }
 
   render() {
     return (
       <div>
         <form>
-          <input data-hook="game-name-input" type="text" onChange={this.handleGameNameChange}/>
+          <input data-hook="game-name-input" type="text" value={this.state.name} onChange={this.handleGameNameChange}/>
           <input data-hook="game-save" type="button" value="Submit" onClick={this.handleSubmit}/>
         </form>
         <Board onCellClick={this.handleCellClick} data={this.state.board}/>
