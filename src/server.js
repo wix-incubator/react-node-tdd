@@ -23,6 +23,10 @@ module.exports = () => {
     res.json(req.body);
   });
 
+  app.get('/api/game/:name', (req, res) =>
+    res.json(req.session.gameData.filter(game => game.name === req.params.name)[0]));
+
+
   app.get('/api/games', (req, res) => {
     res.json(req.session.gameData || []);
   });
