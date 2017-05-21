@@ -51,5 +51,8 @@
   },
   "eslintConfig": {
     "extends": "wix/react"
+  },
+  "yoshi": {
+    "cssModules": false
   }
 }

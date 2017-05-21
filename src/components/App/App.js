@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
-import s from './App.scss';
+import './App.scss';
 
 class App extends Component {
   constructor(props) {
@@ -15,10 +15,10 @@ class App extends Component {
 
   render() {
     return (
-      <div className={s.root}>
+      <div className="root">
         <Link to="/game" data-hook="new-game">New game</Link>
         <ul>
-          {this.state.games.map((el, idx) => <li data-hook="game" key={idx}>{el.name}</li>)}
+          {this.state.games.map((el, idx) => <li data-hook="game" key={idx}><Link to={`/game/${el.name}`} data-hook="new-game">{el.name}</Link></li>)}
         </ul>
       </div>
     );
