@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import {merge} from 'lodash';
 import Board from '../Board';
+import boardService from '../../boardService';
 
 class Game extends Component {
   constructor(props) {
@@ -15,6 +16,9 @@ class Game extends Component {
     if (match && match.params.gameName) {
       const resp = await axios.get(`/api/game/${match.params.gameName}`);
       this.setState(resp.data);
+    } else {
+      const board = boardService.getRandomMines();
+      this.setState({board});
     }
   }
 

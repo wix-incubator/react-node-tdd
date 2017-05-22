@@ -5,7 +5,9 @@ import {mount} from 'enzyme';
 import Game from './Game';
 import {MemoryRouter} from 'react-router';
 import {Route} from 'react-router-dom';
+import sinon from 'sinon';
 import {getTestBaseUrl, eventually} from '../../../test/test-common';
+import boardService from '../../boardService';
 
 const driver = {
   saveGame: ({wrapper, gameName}) => {
@@ -24,10 +26,13 @@ const driver = {
       <Route path="/:gameName" component={Game}/>
     </MemoryRouter>,
       {attachTo: document.createElement('div')}
-  )
+  ),
+  getMines: ({wrapper}) => wrapper.find('.mine'),
+  isCellMineAt: ({wrapper, index}) => wrapper.find('[data-hook="cell"]').at(index).hasClass('mine')
 };
 describe('Game', () => {
   let wrapper;
+  let sinonStub;
 
   afterEach(() => {
     if (!nock.isDone()) {
@@ -41,9 +46,21 @@ describe('Game', () => {
 
   afterEach(() => wrapper.detach());
 
+  afterEach(() => {
+    if (sinonStub) {
+      sinonStub.restore();
+    }
+  });
+
   it('should save a game', () => {
     let savedData;
-    const gameExpectedData = {name: 'Yaniv', board: {[JSON.stringify({x: 0, y: 0})]: {revealed: true}}};
+    const randomMines = {
+      [JSON.stringify({x: 9, y: 9})]: {mine: true}
+    };
+
+    sinonStub = sinon.stub(boardService, 'getRandomMines').returns(randomMines);
+
+    const gameExpectedData = {name: 'Yaniv', board: {...randomMines, [JSON.stringify({x: 0, y: 0})]: {revealed: true}}};
     nock(getTestBaseUrl())
       .post('/api/game', body => {
         savedData = body;
@@ -81,5 +98,26 @@ describe('Game', () => {
 
     expect(driver.isCelRevealedAt({wrapper, index: 0})).to.eql(true);
     expect(driver.isCelRevealedAt({wrapper, index: 1})).to.eql(true);
+  });
+
+  it('should generate 10 mines', () => {
+    wrapper = driver.mount();
+
+    expect(driver.getMines({wrapper}).length).to.eql(10);
+  });
+
+  it('should generate random mines', () => {
+    const randomMines = {
+      [JSON.stringify({x: 0, y: 0})]: {mine: true},
+      [JSON.stringify({x: 9, y: 9})]: {mine: true},
+    };
+
+    sinonStub = sinon.stub(boardService, 'getRandomMines').returns(randomMines);
+    wrapper = driver.mount();
+
+    expect(driver.isCellMineAt({wrapper, index: 0})).to.eql(true);
+    expect(driver.isCellMineAt({wrapper, index: 11})).to.eql(false);
+    expect(driver.isCellMineAt({wrapper, index: 98})).to.eql(false);
+    expect(driver.isCellMineAt({wrapper, index: 99})).to.eql(true);
   });
 });
